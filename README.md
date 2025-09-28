@@ -18,7 +18,7 @@ The scraper fetches post titles, links, and other metadata, and saves the result
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/reddit-web-scraper.git
+git clone https://github.com/atiqrazak/backend-webscraping-test.git
 cd reddit-web-scraper
 ```
 
