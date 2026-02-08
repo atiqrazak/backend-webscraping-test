@@ -1,20 +1,37 @@
+<!-- ===== Tell the browser this is modern HTML5 ===== -->
 <!DOCTYPE html>
+
 <html>
 <head>
+  <!-- 
+    Character encoding
+    UTF-8 allows emojis, Malay characters, etc.
+  -->
   <meta charset="UTF-8">
+
+  <!-- Title shown in browser tab -->
   <title>Reddit Posts</title>
+
+  <!-- ===== CSS: controls how things look (NOT logic) ===== -->
   <style>
+    /* Style the entire page */
     body {
       font-family: Arial, sans-serif;
       background: #f8f9fa;
       padding: 20px;
     }
 
+    /* Page title styling */
     h1 {
       text-align: center;
       color: #333;
     }
 
+    /*
+      Container for all posts
+      CSS Grid = responsive layout
+      auto-fill = browser decides number of columns
+    */
     #posts {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -22,6 +39,7 @@
       margin-top: 20px;
     }
 
+    /* Individual post card */
     .post {
       background: white;
       border-radius: 10px;
@@ -31,51 +49,77 @@
       transition: transform 0.2s;
     }
 
+    /* Small zoom effect on hover */
     .post:hover {
       transform: scale(1.03);
     }
 
+    /* Image inside a post card */
     .post img {
-      max-width: 100%;
+      max-width: 100%;       /* prevent overflow */
       border-radius: 8px;
       margin-top: 10px;
     }
 
+    /* Post title text */
     .post h2 {
       font-size: 16px;
       color: #444;
     }
   </style>
 </head>
+
 <body>
+  <!-- Page heading -->
   <h1>Reddit Posts</h1>
+
+  <!-- 
+    Empty container
+    JavaScript will inject posts here dynamically
+  -->
   <div id="posts"></div>
 
+  <!-- ===== JavaScript: controls behavior & data ===== -->
   <script>
-    // Load JSON dynamically
+    /*
+      fetch() loads the JSON file created by Selenium
+      IMPORTANT:
+      - This works only when running via a local server
+      - Example: python -m http.server
+    */
     fetch("reddit_posts.json")
-      .then(response => response.json())
+      .then(response => response.json()) // convert response → JS object
       .then(data => {
+        // Get the container where posts will be inserted
         const postsDiv = document.getElementById("posts");
 
+        // Loop through each object in the JSON array
         data.forEach(post => {
-          const div = document.createElement("div");
-          div.classList.add("post");
 
+          // Create a new div for each post
+          const div = document.createElement("div");
+          div.classList.add("post"); // apply CSS styling
+
+          // Create title element
           const title = document.createElement("h2");
           title.textContent = post.post_title;
           div.appendChild(title);
 
+          // Only add image if URL exists
           if (post.image_url) {
             const img = document.createElement("img");
             img.src = post.image_url;
             div.appendChild(img);
           }
 
+          // Add the completed post card to the page
           postsDiv.appendChild(div);
         });
       })
-      .catch(error => console.error("Error loading JSON:", error));
+      .catch(error => {
+        // Error handling (file missing, server not running, etc.)
+        console.error("Error loading JSON:", error);
+      });
   </script>
 </body>
 </html>
